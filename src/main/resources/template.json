@@ -1,0 +1,41 @@
+{
+    "pageFormat": {
+        "pageWidth": 90,                                                   
+        "pageLength": 28,                                                  
+        "usePageLengthFromPrinter": false                                  
+    },
+    "template": {
+        "header": [
+            "DELIVERY ORDER"    
+        ],
+        "detail": [
+             "Date    : ${date}      NO.          : ${nickname}",
+             "Customer: ${customer}  Delivery Date: ${delivery_date}",
+            {
+                "table": "table_source",                                   
+                "border": true,
+                "columns": [
+                    {
+                        "source": "code",
+                        "width": 9,
+                        "caption": "Code"
+                    },   
+                    {
+                        "source": "name",
+                        "width": 34,
+                        "caption": "Name"
+                    },
+                    {
+                        "source": "qty",
+                        "width": 6,
+                        "caption": "Qty"
+                    }
+                ]
+            },
+            "                                                  ",
+            "                                                  ",
+            "                                                  ",
+            "   (Signature)                  (Signature)       "
+        ]
+    }
+}

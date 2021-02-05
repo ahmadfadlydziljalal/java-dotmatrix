@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'jacoco'
+apply plugin: 'application'
+
+
+mainClassName = 'dotmatrix.Index'
+
+repositories {
+    jcenter()
+    maven {
+        url "http://dl.bintray.com/jockihendry/maven"
+    }
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+    compile group: 'jockihendry', name: 'simple-escp', version: '0.5.3'
+}
