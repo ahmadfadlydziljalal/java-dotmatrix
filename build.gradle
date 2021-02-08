@@ -16,3 +16,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile group: 'jockihendry', name: 'simple-escp', version: '0.5.3'
 }
+
+dependencies {
+  implementation 'com.google.code.gson:gson:2.8.6'
+}

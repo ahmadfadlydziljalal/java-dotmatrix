@@ -5,8 +5,17 @@
  */
 package dotmatrix;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import dotmatrix.controllers.Report;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JFileChooser;
+import simple.escp.Template;
+import simple.escp.data.JsonDataSource;
+import simple.escp.data.MapDataSource;
+import simple.escp.json.JsonTemplate;
 
 /**
  *
@@ -14,11 +23,8 @@ import javax.swing.JFileChooser;
  */
 public class Index extends javax.swing.JFrame {
 
-    public Index()  {
-        
-        
+    public Index() {
         initComponents();
-        
     }
 
     /**
@@ -30,20 +36,43 @@ public class Index extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jButton1 = new javax.swing.JButton();
+        jButtonPilihFile = new javax.swing.JButton();
         jTextFieldPathFile = new javax.swing.JTextField();
+        jButtonCompileGson = new javax.swing.JButton();
+        jPanelCompileResult = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton1.setText("Pilih File");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jButtonPilihFile.setText("Pilih File");
+        jButtonPilihFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jButtonPilihFileActionPerformed(evt);
             }
         });
+
+        jButtonCompileGson.setText("Compile");
+        jButtonCompileGson.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCompileGsonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanelCompileResultLayout = new javax.swing.GroupLayout(jPanelCompileResult);
+        jPanelCompileResult.setLayout(jPanelCompileResultLayout);
+        jPanelCompileResultLayout.setHorizontalGroup(
+            jPanelCompileResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jPanelCompileResultLayout.setVerticalGroup(
+            jPanelCompileResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 390, Short.MAX_VALUE)
+        );
+
+        jLabel1.setText("Compile Result:");
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -59,33 +88,78 @@ public class Index extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextFieldPathFile, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(28, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanelCompileResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButtonPilihFile)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldPathFile, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonCompileGson))
+                            .addComponent(jLabel1))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jTextFieldPathFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(352, Short.MAX_VALUE))
+                    .addComponent(jButtonPilihFile)
+                    .addComponent(jTextFieldPathFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonCompileGson))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanelCompileResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        setSize(new java.awt.Dimension(568, 447));
+        setSize(new java.awt.Dimension(547, 527));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+    private void jButtonPilihFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonPilihFileActionPerformed
+
         JFileChooser jfc = new JFileChooser();
-        jfc.showOpenDialog(null);
+        jfc.setCurrentDirectory(new File(
+                System.getProperty("user.home") + System.getProperty("file.separator") + "Downloads"
+        ));
+
+        int result = jfc.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File file = jfc.getSelectedFile();
+            jTextFieldPathFile.setText(file.getAbsolutePath());
+        }
+    }//GEN-LAST:event_jButtonPilihFileActionPerformed
+
+    private void jButtonCompileGsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompileGsonActionPerformed
+
+        // Create a report, param => file`s path
+        Report report = new Report(jTextFieldPathFile.getText());
+
+        // Read the file, as the return is a hashMap
+        HashMap<String, String> result = report.convertJsonToObject();
+
+        String documentTemplate = String.valueOf(result.get("documentTemplate")).trim();
+        String documentValue = String.valueOf(result.get("documentValue")).trim();
         
-        File file = jfc.getSelectedFile();
-        jTextFieldPathFile.setText(file.getAbsolutePath());
-    }//GEN-LAST:event_jButton1ActionPerformed
+        Template template = new JsonTemplate(documentTemplate);
+        
+        // Using Json
+         JsonDataSource jsonDataSource = new JsonDataSource(documentValue);
+        
+        // Using Map
+        // Map<String, Object> map = new Gson().fromJson(documentValue, new TypeToken<HashMap<String, Object>>() {}.getType());
+        // MapDataSource mapDataSource = new MapDataSource(map);
+        
+        // PrintPreviewPane printPreviewPane = new PrintPreviewPane();
+        // printPreviewPane.display(template, jsonDataSource);
+
+    }//GEN-LAST:event_jButtonCompileGsonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -97,6 +171,9 @@ public class Index extends javax.swing.JFrame {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
+
+                // UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");  // This line gives Windows Theme
+                //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -112,10 +189,13 @@ public class Index extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButtonCompileGson;
+    private javax.swing.JButton jButtonPilihFile;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanelCompileResult;
     private javax.swing.JTextField jTextFieldPathFile;
     // End of variables declaration//GEN-END:variables
 }
