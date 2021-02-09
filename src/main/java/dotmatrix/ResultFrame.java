@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.swing.JFrame;
 import simple.escp.Template;
 import simple.escp.data.DataSource;
+import simple.escp.swing.Editor;
 import simple.escp.swing.PrintPreviewPane;
 
 /**
@@ -50,19 +51,22 @@ public class ResultFrame extends JFrame {
         // Hardcode debug
         PrintPreviewPane printPreviewPane = new PrintPreviewPane(); // Error: Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
         printPreviewPane.display(template, dataSource);
-
+        
+        
        
         //PrintPreviewPane printPreviewPane = new PrintPreviewPane(this.template, this.map, null);
         
         getContentPane().setLayout(new BorderLayout());
         getContentPane().add(printPreviewPane, BorderLayout.CENTER);          
 
-        setPreferredSize(new Dimension(500, 500));
+        setPreferredSize(new Dimension(1024, 600));
         pack();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
         
+ 
         
+              
     }
 
 }

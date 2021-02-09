@@ -8,15 +8,19 @@ package dotmatrix;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dotmatrix.controllers.Report;
+import java.awt.BorderLayout;
 import java.io.File;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import javax.swing.Action;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import simple.escp.Template;
 import simple.escp.data.MapDataSource;
 
 import simple.escp.json.JsonTemplate;
+import simple.escp.swing.PrintPreviewPane;
 
 /**
  *
@@ -40,8 +44,8 @@ public class Index extends javax.swing.JFrame {
         jButtonPilihFile = new javax.swing.JButton();
         jTextFieldPathFile = new javax.swing.JTextField();
         jButtonCompileGson = new javax.swing.JButton();
-        jPanelCompileResult = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        jInternalFrameResult = new javax.swing.JInternalFrame();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -62,18 +66,20 @@ public class Index extends javax.swing.JFrame {
             }
         });
 
-        javax.swing.GroupLayout jPanelCompileResultLayout = new javax.swing.GroupLayout(jPanelCompileResult);
-        jPanelCompileResult.setLayout(jPanelCompileResultLayout);
-        jPanelCompileResultLayout.setHorizontalGroup(
-            jPanelCompileResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jLabel1.setText("Compile Result:");
+
+        jInternalFrameResult.setVisible(true);
+
+        javax.swing.GroupLayout jInternalFrameResultLayout = new javax.swing.GroupLayout(jInternalFrameResult.getContentPane());
+        jInternalFrameResult.getContentPane().setLayout(jInternalFrameResultLayout);
+        jInternalFrameResultLayout.setHorizontalGroup(
+            jInternalFrameResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
-        jPanelCompileResultLayout.setVerticalGroup(
-            jPanelCompileResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 390, Short.MAX_VALUE)
+        jInternalFrameResultLayout.setVerticalGroup(
+            jInternalFrameResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 360, Short.MAX_VALUE)
         );
-
-        jLabel1.setText("Compile Result:");
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -90,17 +96,16 @@ public class Index extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanelCompileResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButtonPilihFile)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldPathFile, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButtonCompileGson))
-                            .addComponent(jLabel1))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jInternalFrameResult, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButtonPilihFile)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextFieldPathFile, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButtonCompileGson)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -114,11 +119,11 @@ public class Index extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanelCompileResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jInternalFrameResult)
                 .addContainerGap())
         );
 
-        setSize(new java.awt.Dimension(547, 527));
+        setSize(new java.awt.Dimension(661, 527));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -129,6 +134,12 @@ public class Index extends javax.swing.JFrame {
                 System.getProperty("user.home") + System.getProperty("file.separator") + "Downloads"
         ));
 
+        Action details = jfc.getActionMap().get("viewTypeDetails");
+        details.actionPerformed(null);
+        
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON", "json");
+        jfc.setFileFilter(filter);
+        
         int result = jfc.showOpenDialog(this);
 
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -140,31 +151,44 @@ public class Index extends javax.swing.JFrame {
     private void jButtonCompileGsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompileGsonActionPerformed
 
         // Create a report, param => file`s path
-        Report report = new Report(jTextFieldPathFile.getText());
+        if (!jTextFieldPathFile.getText().isEmpty() || !jTextFieldPathFile.getText().isBlank()) {
+            Report report = new Report(jTextFieldPathFile.getText());
 
-        // Read the file, as the return is a hashMap
-        HashMap<String, String> result = report.convertJsonToObject();
+            // Read the file, as the return is a hashMap
+            HashMap<String, String> result = report.convertJsonToObject();
+            
+            if (!result.isEmpty()) {
 
-        // Set Template
-        //String documentTemplate = String.valueOf(result.get("documentTemplate")).trim();
-        
-        Gson gsonTemplate = new Gson();
-        String jsonStringTemplate = gsonTemplate.toJson(result.get("documentTemplate"));
-        Template template = new JsonTemplate(jsonStringTemplate);
-        
+                Gson gsonTemplate = new Gson();
+                String jsonStringTemplate = gsonTemplate.toJson(result.get("documentTemplate"));
+                Template template = new JsonTemplate(jsonStringTemplate);
 
-        // Use DeepClone
-        Gson gson = new Gson();
-        String jsonString = new Gson().toJson(result.get("documentValue"));
-        java.lang.reflect.Type type = new TypeToken<HashMap<String, Object>>() {}.getType();
-        Map<String, Object> map = gson.fromJson(jsonString, type);
-        
-        // Set DataSource
-        MapDataSource dataSource = new MapDataSource(map);
-        
-        // Display result as preview
-        ResultFrame resultFrame = new ResultFrame(template, map);
-        resultFrame.display();
+                // Use DeepClone
+                Gson gson = new Gson();
+                String jsonString = new Gson().toJson(result.get("documentValue"));
+                java.lang.reflect.Type type = new TypeToken<HashMap<String, Object>>() {
+                }.getType();
+                Map<String, Object> map = gson.fromJson(jsonString, type);
+
+                // Set DataSource
+                MapDataSource dataSource = new MapDataSource(map);
+                PrintPreviewPane printPreviewPane = new PrintPreviewPane(); // Error: Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
+                printPreviewPane.display(template, dataSource);
+
+                jInternalFrameResult.getContentPane().removeAll();
+                jInternalFrameResult.repaint();
+
+                jInternalFrameResult.setLayout(new BorderLayout());
+                jInternalFrameResult.add(printPreviewPane, BorderLayout.CENTER);
+                jInternalFrameResult.setAutoscrolls(true);
+
+            } else {
+                JOptionPane.showMessageDialog(this, "File tidak ditemukan / tidak valid.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Pilih File dulu");
+        }
+
 
     }//GEN-LAST:event_jButtonCompileGsonActionPerformed
 
@@ -179,7 +203,7 @@ public class Index extends javax.swing.JFrame {
                     break;
                 }
 
-                // UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");  // This line gives Windows Theme
+                //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");  // This line gives Windows Theme
                 //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
@@ -198,11 +222,11 @@ public class Index extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonCompileGson;
     private javax.swing.JButton jButtonPilihFile;
+    private javax.swing.JInternalFrame jInternalFrameResult;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanelCompileResult;
     private javax.swing.JTextField jTextFieldPathFile;
     // End of variables declaration//GEN-END:variables
 }
