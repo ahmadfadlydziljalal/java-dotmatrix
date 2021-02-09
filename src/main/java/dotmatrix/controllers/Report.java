@@ -38,6 +38,8 @@ public class Report {
     public HashMap<String, String> convertJsonToObject() {
 
         Gson gson = new Gson();
+        
+        // Reader reader = new FileReader(this.filePathString)
         try (JsonReader reader = new JsonReader(new FileReader(this.filePathString))) {
 
             // Converting JSON File to Java Object

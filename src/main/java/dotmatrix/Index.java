@@ -9,12 +9,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dotmatrix.controllers.Report;
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import javax.swing.JFileChooser;
 import simple.escp.Template;
-import simple.escp.data.JsonDataSource;
 import simple.escp.data.MapDataSource;
+
 import simple.escp.json.JsonTemplate;
 
 /**
@@ -144,20 +145,26 @@ public class Index extends javax.swing.JFrame {
         // Read the file, as the return is a hashMap
         HashMap<String, String> result = report.convertJsonToObject();
 
-        String documentTemplate = String.valueOf(result.get("documentTemplate")).trim();
-        String documentValue = String.valueOf(result.get("documentValue")).trim();
+        // Set Template
+        //String documentTemplate = String.valueOf(result.get("documentTemplate")).trim();
         
-        Template template = new JsonTemplate(documentTemplate);
+        Gson gsonTemplate = new Gson();
+        String jsonStringTemplate = gsonTemplate.toJson(result.get("documentTemplate"));
+        Template template = new JsonTemplate(jsonStringTemplate);
         
-        // Using Json
-         JsonDataSource jsonDataSource = new JsonDataSource(documentValue);
+
+        // Use DeepClone
+        Gson gson = new Gson();
+        String jsonString = new Gson().toJson(result.get("documentValue"));
+        java.lang.reflect.Type type = new TypeToken<HashMap<String, Object>>() {}.getType();
+        Map<String, Object> map = gson.fromJson(jsonString, type);
         
-        // Using Map
-        // Map<String, Object> map = new Gson().fromJson(documentValue, new TypeToken<HashMap<String, Object>>() {}.getType());
-        // MapDataSource mapDataSource = new MapDataSource(map);
+        // Set DataSource
+        MapDataSource dataSource = new MapDataSource(map);
         
-        // PrintPreviewPane printPreviewPane = new PrintPreviewPane();
-        // printPreviewPane.display(template, jsonDataSource);
+        // Display result as preview
+        ResultFrame resultFrame = new ResultFrame(template, map);
+        resultFrame.display();
 
     }//GEN-LAST:event_jButtonCompileGsonActionPerformed
 
