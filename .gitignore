@@ -45,6 +45,20 @@ nbdist/
 nbactions.xml
 nb-configuration.xml
 
+/*/nb-configuration.xml
+/nbproject/
+/*/nbproject/
+/*/target/
+/*/build/
+/netbeans-gradle-default-models/gradle-api/
+.gradle/
+/.nb-gradle-properties
+.nb-gradle/
+
+# Directories left from old Ant project
+/build/
+/nbproject/private/
+
 
 # OS
 .DS_Store
@@ -54,16 +68,3 @@ nb-configuration.xml
 release.properties
 pom.xml.releaseBackup
 pom.xml.tag
-
-.gradle
-**/build/
-!src/**/build/
-
-# Ignore Gradle GUI config
-gradle-app.setting
-
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
-
-# Cache of project
-.gradletasknamecache

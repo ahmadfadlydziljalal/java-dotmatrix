@@ -20,6 +20,7 @@ import simple.escp.Template;
 import simple.escp.data.MapDataSource;
 
 import simple.escp.json.JsonTemplate;
+import simple.escp.swing.Editor;
 import simple.escp.swing.PrintPreviewPane;
 
 /**
@@ -181,7 +182,7 @@ public class Index extends javax.swing.JFrame {
                 jInternalFrameResult.setLayout(new BorderLayout());
                 jInternalFrameResult.add(printPreviewPane, BorderLayout.CENTER);
                 jInternalFrameResult.setAutoscrolls(true);
-
+               
             } else {
                 JOptionPane.showMessageDialog(this, "File tidak ditemukan / tidak valid.");
             }
