@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import dotmatrix.controllers.Report;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,8 +77,6 @@ public class Index extends javax.swing.JFrame {
 
         jLabel1.setText("Compile Result:");
 
-        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
-
         jInternalFrameResult.setPreferredSize(new java.awt.Dimension(222, 233));
         jInternalFrameResult.setVisible(true);
 
@@ -89,7 +88,7 @@ public class Index extends javax.swing.JFrame {
         );
         jInternalFrameResultLayout.setVerticalGroup(
             jInternalFrameResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 199, Short.MAX_VALUE)
+            .addGap(0, 351, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jInternalFrameResult);
@@ -136,7 +135,7 @@ public class Index extends javax.swing.JFrame {
                         .addComponent(jButtonCompileGson)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+                        .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
                         .addGap(6, 6, 6))))
         );
         layout.setVerticalGroup(
@@ -153,7 +152,7 @@ public class Index extends javax.swing.JFrame {
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
         );
 
-        setSize(new java.awt.Dimension(568, 504));
+        setSize(new java.awt.Dimension(570, 504));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -186,15 +185,18 @@ public class Index extends javax.swing.JFrame {
 
             // Read the file, as the return is a hashMap
             HashMap<String, String> result = report.convertJsonToObject();
-            
-            jTextAreaLogCompile.append("Memilih File " + jTextFieldPathFile.getText() +" \n");
+
+            // Adding Log
+            jTextAreaLogCompile.append("Memilih File " + jTextFieldPathFile.getText() + " \n"); // 
             if (!result.isEmpty()) {
 
+                // Adding Log
                 jTextAreaLogCompile.append("Membuat Template... \n");
                 Gson gsonTemplate = new Gson();
                 String jsonStringTemplate = gsonTemplate.toJson(result.get("documentTemplate"));
                 Template template = new JsonTemplate(jsonStringTemplate);
 
+                // Adding Log
                 jTextAreaLogCompile.append("Mengisi Template... \n");
                 // Use DeepClone
                 Gson gson = new Gson();
@@ -203,13 +205,14 @@ public class Index extends javax.swing.JFrame {
                 }.getType();
                 Map<String, Object> map = gson.fromJson(jsonString, type);
 
+                // Adding Log
                 jTextAreaLogCompile.append("Membuat Data Source... \n");
                 // Set DataSource
                 MapDataSource dataSource = new MapDataSource(map);
                 PrintPreviewPane printPreviewPane = new PrintPreviewPane(); // Error: Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
                 printPreviewPane.display(template, dataSource);
 
-                // Set Result di internal frame
+                // Set Result inside internal frame
                 jInternalFrameResult.getContentPane().removeAll();
                 jInternalFrameResult.repaint();
                 jInternalFrameResult.setLayout(new BorderLayout());
@@ -219,16 +222,23 @@ public class Index extends javax.swing.JFrame {
 
             } else {
                 JOptionPane.showMessageDialog(this, "File tidak ditemukan / tidak valid.");
-                jTextAreaLogCompile.append("Error: File " + jTextFieldPathFile.getText() +" tidak ditemukan / tidak valid. \n");
+                
+                // Adding Log
+                jTextAreaLogCompile.append("Error: File " + jTextFieldPathFile.getText() + " tidak ditemukan / tidak valid. \n");
             }
         } else {
             JOptionPane.showMessageDialog(this, "Pilih File dulu");
+            // Adding Log
             jTextAreaLogCompile.append("Error: File belum dipilih \n");
         }
     }//GEN-LAST:event_jButtonCompileGsonActionPerformed
 
     private void jMenuItemEditorManualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemEditorManualActionPerformed
-        new Editor().setVisible(true);
+        Editor editor = new Editor();
+        editor.setPreferredSize(new Dimension(600, 600));
+        editor.pack();
+        editor.setLocationRelativeTo(null);
+        editor.setVisible(true);
     }//GEN-LAST:event_jMenuItemEditorManualActionPerformed
 
     /**
@@ -237,8 +247,9 @@ public class Index extends javax.swing.JFrame {
     public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         try {
             // Set System L&F
-            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
@@ -246,8 +257,7 @@ public class Index extends javax.swing.JFrame {
             }
 
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            
-          
+
         }
 
         /* Create and display the form */
