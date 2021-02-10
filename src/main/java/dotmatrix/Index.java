@@ -33,6 +33,7 @@ public class Index extends javax.swing.JFrame {
 
     public Index() {
         initComponents();
+        jSplitPane1.setResizeWeight(1.0);
     }
 
     /**
@@ -48,10 +49,14 @@ public class Index extends javax.swing.JFrame {
         jTextFieldPathFile = new javax.swing.JTextField();
         jButtonCompileGson = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jSplitPane1 = new javax.swing.JSplitPane();
         jInternalFrameResult = new javax.swing.JInternalFrame();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextAreaLogCompile = new javax.swing.JTextArea();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItemEditorManual = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -71,6 +76,9 @@ public class Index extends javax.swing.JFrame {
 
         jLabel1.setText("Compile Result:");
 
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        jInternalFrameResult.setPreferredSize(new java.awt.Dimension(222, 233));
         jInternalFrameResult.setVisible(true);
 
         javax.swing.GroupLayout jInternalFrameResultLayout = new javax.swing.GroupLayout(jInternalFrameResult.getContentPane());
@@ -81,13 +89,31 @@ public class Index extends javax.swing.JFrame {
         );
         jInternalFrameResultLayout.setVerticalGroup(
             jInternalFrameResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 360, Short.MAX_VALUE)
+            .addGap(0, 199, Short.MAX_VALUE)
         );
+
+        jSplitPane1.setLeftComponent(jInternalFrameResult);
+
+        jTextAreaLogCompile.setEditable(false);
+        jTextAreaLogCompile.setColumns(20);
+        jTextAreaLogCompile.setRows(5);
+        jScrollPane1.setViewportView(jTextAreaLogCompile);
+
+        jSplitPane1.setRightComponent(jScrollPane1);
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
+
+        jMenuItemEditorManual.setText("Editor Manual");
+        jMenuItemEditorManual.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItemEditorManualActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItemEditorManual);
+
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
@@ -100,16 +126,18 @@ public class Index extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jInternalFrameResult, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jButtonPilihFile)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldPathFile)))
+                        .addGap(6, 6, 6)
+                        .addComponent(jButtonCompileGson)
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButtonPilihFile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextFieldPathFile, javax.swing.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonCompileGson)))
-                .addContainerGap())
+                        .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 536, Short.MAX_VALUE)
+                        .addGap(6, 6, 6))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,12 +149,11 @@ public class Index extends javax.swing.JFrame {
                     .addComponent(jButtonCompileGson))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jInternalFrameResult)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
         );
 
-        setSize(new java.awt.Dimension(661, 527));
+        setSize(new java.awt.Dimension(568, 504));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -159,13 +186,16 @@ public class Index extends javax.swing.JFrame {
 
             // Read the file, as the return is a hashMap
             HashMap<String, String> result = report.convertJsonToObject();
-
+            
+            jTextAreaLogCompile.append("Memilih File " + jTextFieldPathFile.getText() +" \n");
             if (!result.isEmpty()) {
 
+                jTextAreaLogCompile.append("Membuat Template... \n");
                 Gson gsonTemplate = new Gson();
                 String jsonStringTemplate = gsonTemplate.toJson(result.get("documentTemplate"));
                 Template template = new JsonTemplate(jsonStringTemplate);
 
+                jTextAreaLogCompile.append("Mengisi Template... \n");
                 // Use DeepClone
                 Gson gson = new Gson();
                 String jsonString = new Gson().toJson(result.get("documentValue"));
@@ -173,6 +203,7 @@ public class Index extends javax.swing.JFrame {
                 }.getType();
                 Map<String, Object> map = gson.fromJson(jsonString, type);
 
+                jTextAreaLogCompile.append("Membuat Data Source... \n");
                 // Set DataSource
                 MapDataSource dataSource = new MapDataSource(map);
                 PrintPreviewPane printPreviewPane = new PrintPreviewPane(); // Error: Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
@@ -184,14 +215,21 @@ public class Index extends javax.swing.JFrame {
                 jInternalFrameResult.setLayout(new BorderLayout());
                 jInternalFrameResult.add(printPreviewPane, BorderLayout.CENTER);
                 jInternalFrameResult.setAutoscrolls(true);
+                jTextAreaLogCompile.append("File " + jTextFieldPathFile.getText() + " sukses di compile.\n");
 
             } else {
                 JOptionPane.showMessageDialog(this, "File tidak ditemukan / tidak valid.");
+                jTextAreaLogCompile.append("Error: File " + jTextFieldPathFile.getText() +" tidak ditemukan / tidak valid. \n");
             }
         } else {
             JOptionPane.showMessageDialog(this, "Pilih File dulu");
+            jTextAreaLogCompile.append("Error: File belum dipilih \n");
         }
     }//GEN-LAST:event_jButtonCompileGsonActionPerformed
+
+    private void jMenuItemEditorManualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemEditorManualActionPerformed
+        new Editor().setVisible(true);
+    }//GEN-LAST:event_jMenuItemEditorManualActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,17 +237,17 @@ public class Index extends javax.swing.JFrame {
     public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         try {
             // Set System L&F
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
+
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             
+          
         }
 
         /* Create and display the form */
@@ -229,6 +267,10 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItemEditorManual;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSplitPane jSplitPane1;
+    public javax.swing.JTextArea jTextAreaLogCompile;
     private javax.swing.JTextField jTextFieldPathFile;
     // End of variables declaration//GEN-END:variables
 }
