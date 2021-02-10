@@ -15,6 +15,8 @@ import java.util.Map;
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import simple.escp.Template;
 import simple.escp.data.MapDataSource;
@@ -137,10 +139,10 @@ public class Index extends javax.swing.JFrame {
 
         Action details = jfc.getActionMap().get("viewTypeDetails");
         details.actionPerformed(null);
-        
+
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON", "json");
         jfc.setFileFilter(filter);
-        
+
         int result = jfc.showOpenDialog(this);
 
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -157,7 +159,7 @@ public class Index extends javax.swing.JFrame {
 
             // Read the file, as the return is a hashMap
             HashMap<String, String> result = report.convertJsonToObject();
-            
+
             if (!result.isEmpty()) {
 
                 Gson gsonTemplate = new Gson();
@@ -182,11 +184,9 @@ public class Index extends javax.swing.JFrame {
                 jInternalFrameResult.setLayout(new BorderLayout());
                 jInternalFrameResult.add(printPreviewPane, BorderLayout.CENTER);
                 jInternalFrameResult.setAutoscrolls(true);
-                
+
             } else {
-                
                 JOptionPane.showMessageDialog(this, "File tidak ditemukan / tidak valid.");
-                
             }
         } else {
             JOptionPane.showMessageDialog(this, "Pilih File dulu");
@@ -196,19 +196,20 @@ public class Index extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         try {
+            // Set System L&F
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
+            
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
-
-                //UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");  // This line gives Windows Theme
-                //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Index.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            
         }
 
         /* Create and display the form */
