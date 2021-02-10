@@ -176,21 +176,21 @@ public class Index extends javax.swing.JFrame {
                 PrintPreviewPane printPreviewPane = new PrintPreviewPane(); // Error: Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
                 printPreviewPane.display(template, dataSource);
 
+                // Set Result di internal frame
                 jInternalFrameResult.getContentPane().removeAll();
                 jInternalFrameResult.repaint();
-
                 jInternalFrameResult.setLayout(new BorderLayout());
                 jInternalFrameResult.add(printPreviewPane, BorderLayout.CENTER);
                 jInternalFrameResult.setAutoscrolls(true);
-               
+                
             } else {
+                
                 JOptionPane.showMessageDialog(this, "File tidak ditemukan / tidak valid.");
+                
             }
         } else {
             JOptionPane.showMessageDialog(this, "Pilih File dulu");
         }
-
-
     }//GEN-LAST:event_jButtonCompileGsonActionPerformed
 
     /**

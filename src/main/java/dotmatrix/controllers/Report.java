@@ -6,14 +6,10 @@
 package dotmatrix.controllers;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
-import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  *
@@ -38,18 +34,17 @@ public class Report {
     public HashMap<String, String> convertJsonToObject() {
 
         Gson gson = new Gson();
+        HashMap<String, String> hashMapResult = new HashMap<>();
         
-        // Reader reader = new FileReader(this.filePathString)
         try (JsonReader reader = new JsonReader(new FileReader(this.filePathString))) {
-
+            
             // Converting JSON File to Java Object
-            HashMap<String, String> hashMapResult = gson.fromJson(reader, HashMap.class);
-            return hashMapResult;
-
+            hashMapResult = gson.fromJson(reader, HashMap.class);
+            
         } catch (IOException e) {
 
         }
-        return null;
+        return hashMapResult;
     }
 
 }

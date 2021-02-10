@@ -20,3 +20,14 @@ dependencies {
 dependencies {
   implementation 'com.google.code.gson:gson:2.8.6'
 }
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'dotmatrix.Index'
+        )
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+ }
