@@ -180,7 +180,7 @@ public class Index extends javax.swing.JFrame {
     private void jButtonCompileGsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompileGsonActionPerformed
 
         // Create a report, param => file`s path
-        if (!jTextFieldPathFile.getText().isEmpty() || !jTextFieldPathFile.getText().isBlank()) {
+        if (!jTextFieldPathFile.getText().isEmpty()) {
             Report report = new Report(jTextFieldPathFile.getText());
 
             // Read the file, as the return is a hashMap
