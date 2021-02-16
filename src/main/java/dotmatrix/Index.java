@@ -186,6 +186,8 @@ public class Index extends javax.swing.JFrame {
 
     private void jButtonCompileGsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompileGsonActionPerformed
 
+        jButtonCompileGson.setText("Compiling....");
+        
         // Create a report, param => file`s path
         if (!jTextFieldPathFile.getText().isEmpty()) {
             Report report = new Report(jTextFieldPathFile.getText());
@@ -242,6 +244,8 @@ public class Index extends javax.swing.JFrame {
             // Adding Log
             jTextAreaLogCompile.append("Error: File belum dipilih \n");
         }
+        
+        jButtonCompileGson.setText("Compile");
     }//GEN-LAST:event_jButtonCompileGsonActionPerformed
 
     private void jMenuItemEditorManualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemEditorManualActionPerformed
