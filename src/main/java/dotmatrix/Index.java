@@ -13,15 +13,17 @@ import java.awt.Dimension;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
 import simple.escp.Template;
 import simple.escp.data.MapDataSource;
-
 import simple.escp.json.JsonTemplate;
 import simple.escp.swing.Editor;
 import simple.escp.swing.PrintPreviewPane;
@@ -35,6 +37,7 @@ public class Index extends javax.swing.JFrame {
     public Index() {
         initComponents();
         jSplitPane1.setResizeWeight(1.0);
+        setExtendedState(java.awt.Frame.MAXIMIZED_BOTH);
     }
 
     /**
@@ -68,6 +71,8 @@ public class Index extends javax.swing.JFrame {
             }
         });
 
+        jButtonCompileGson.setBackground(new java.awt.Color(51, 51, 255));
+        jButtonCompileGson.setForeground(new java.awt.Color(255, 255, 255));
         jButtonCompileGson.setText("Compile");
         jButtonCompileGson.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -126,13 +131,15 @@ public class Index extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jButtonPilihFile)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonCompileGson)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jTextFieldPathFile)))
-                        .addGap(6, 6, 6)
-                        .addComponent(jButtonCompileGson)
                         .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
@@ -207,6 +214,7 @@ public class Index extends javax.swing.JFrame {
 
                 // Adding Log
                 jTextAreaLogCompile.append("Membuat Data Source... \n");
+                
                 // Set DataSource
                 MapDataSource dataSource = new MapDataSource(map);
                 PrintPreviewPane printPreviewPane = new PrintPreviewPane(); // Error: Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
@@ -218,13 +226,16 @@ public class Index extends javax.swing.JFrame {
                 jInternalFrameResult.setLayout(new BorderLayout());
                 jInternalFrameResult.add(printPreviewPane, BorderLayout.CENTER);
                 jInternalFrameResult.setAutoscrolls(true);
+                jInternalFrameResult.setFocusable(true);
                 jTextAreaLogCompile.append("File " + jTextFieldPathFile.getText() + " sukses di compile.\n");
 
             } else {
+                
                 JOptionPane.showMessageDialog(this, "File tidak ditemukan / tidak valid.");
                 
                 // Adding Log
                 jTextAreaLogCompile.append("Error: File " + jTextFieldPathFile.getText() + " tidak ditemukan / tidak valid. \n");
+                
             }
         } else {
             JOptionPane.showMessageDialog(this, "Pilih File dulu");
@@ -247,8 +258,10 @@ public class Index extends javax.swing.JFrame {
     public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         try {
             // Set System L&F
-//            UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-//            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            // UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+            // UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
