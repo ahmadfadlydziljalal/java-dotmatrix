@@ -57,6 +57,7 @@ public class Index extends javax.swing.JFrame {
         jInternalFrameResult = new javax.swing.JInternalFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextAreaLogCompile = new javax.swing.JTextArea();
+        jProgressBar1 = new javax.swing.JProgressBar();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
@@ -93,7 +94,7 @@ public class Index extends javax.swing.JFrame {
         );
         jInternalFrameResultLayout.setVerticalGroup(
             jInternalFrameResultLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 351, Short.MAX_VALUE)
+            .addGap(0, 348, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jInternalFrameResult);
@@ -104,6 +105,8 @@ public class Index extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTextAreaLogCompile);
 
         jSplitPane1.setRightComponent(jScrollPane1);
+
+        jProgressBar1.setStringPainted(true);
 
         jMenu1.setText("File");
         jMenuBar1.add(jMenu1);
@@ -133,7 +136,8 @@ public class Index extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel1)
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jProgressBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jButtonPilihFile)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -154,9 +158,11 @@ public class Index extends javax.swing.JFrame {
                     .addComponent(jTextFieldPathFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonCompileGson))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE))
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
         );
 
         setSize(new java.awt.Dimension(570, 504));
@@ -186,66 +192,65 @@ public class Index extends javax.swing.JFrame {
 
     private void jButtonCompileGsonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCompileGsonActionPerformed
 
-        jButtonCompileGson.setText("Compiling....");
-        
-        // Create a report, param => file`s path
-        if (!jTextFieldPathFile.getText().isEmpty()) {
-            Report report = new Report(jTextFieldPathFile.getText());
+        if (jTextFieldPathFile.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Pilih File dulu");
+            return;
+        }
 
-            // Read the file, as the return is a hashMap
-            HashMap<String, String> result = report.convertJsonToObject();
-
-            // Adding Log
+        Runnable runner = () -> {
+            jProgressBar1.setValue(0);
+            jButtonCompileGson.setText("Compiling....");
+            
+            Report report = new Report(jTextFieldPathFile.getText()); // Create a report, param => file`s path
+            HashMap<String, String> result = report.convertJsonToObject();// Read the file, as the return is a hashMap
+            
+            jProgressBar1.setValue(5); // Adding Log
             jTextAreaLogCompile.append("Memilih File " + jTextFieldPathFile.getText() + " \n"); // 
+            
             if (!result.isEmpty()) {
-
-                // Adding Log
-                jTextAreaLogCompile.append("Membuat Template... \n");
+                
+                jProgressBar1.setValue(6);
+                jTextAreaLogCompile.append("Mengambil template report dari resource \n");
                 Gson gsonTemplate = new Gson();
                 String jsonStringTemplate = gsonTemplate.toJson(result.get("documentTemplate"));
+                
+                jProgressBar1.setValue(7);
+                jTextAreaLogCompile.append("Membentuk template. \n");
                 Template template = new JsonTemplate(jsonStringTemplate);
-
-                // Adding Log
-                jTextAreaLogCompile.append("Mengisi Template... \n");
-                // Use DeepClone
+                
+                jProgressBar1.setValue(8);
+                jTextAreaLogCompile.append("Melakukan deep clone untuk membentuk isi report... \n");
                 Gson gson = new Gson();
                 String jsonString = new Gson().toJson(result.get("documentValue"));
-                java.lang.reflect.Type type = new TypeToken<HashMap<String, Object>>() {
+                java.lang.reflect.Type type1 = new TypeToken<HashMap<String, Object>>() {
                 }.getType();
-                Map<String, Object> map = gson.fromJson(jsonString, type);
-
-                // Adding Log
-                jTextAreaLogCompile.append("Membuat Data Source... \n");
+                Map<String, Object> map = gson.fromJson(jsonString, type1);
                 
-                // Set DataSource
+                jProgressBar1.setValue(80);
+                jTextAreaLogCompile.append("Membuat Data Source... \n");
                 MapDataSource dataSource = new MapDataSource(map);
                 PrintPreviewPane printPreviewPane = new PrintPreviewPane(); // Error: Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException
                 printPreviewPane.display(template, dataSource);
-
-                // Set Result inside internal frame
+                
+                jProgressBar1.setValue(90);
+                jTextAreaLogCompile.append("Menampilkan Preview... \n");
                 jInternalFrameResult.getContentPane().removeAll();
                 jInternalFrameResult.repaint();
                 jInternalFrameResult.setLayout(new BorderLayout());
                 jInternalFrameResult.add(printPreviewPane, BorderLayout.CENTER);
                 jInternalFrameResult.setAutoscrolls(true);
                 jInternalFrameResult.setFocusable(true);
-                jTextAreaLogCompile.append("File " + jTextFieldPathFile.getText() + " sukses di compile.\n");
-
-            } else {
                 
-                JOptionPane.showMessageDialog(this, "File tidak ditemukan / tidak valid.");
-                
-                // Adding Log
-                jTextAreaLogCompile.append("Error: File " + jTextFieldPathFile.getText() + " tidak ditemukan / tidak valid. \n");
-                
+                jProgressBar1.setValue(100);
+                jTextAreaLogCompile.append(jTextFieldPathFile.getText() + ": sukses di compile; Dzil" + " \n=================\n");
             }
-        } else {
-            JOptionPane.showMessageDialog(this, "Pilih File dulu");
-            // Adding Log
-            jTextAreaLogCompile.append("Error: File belum dipilih \n");
-        }
-        
-        jButtonCompileGson.setText("Compile");
+            jButtonCompileGson.setText("Compile");
+        };
+
+        Thread t = new Thread(runner, "Code Executer");
+        t.start();
+
+
     }//GEN-LAST:event_jButtonCompileGsonActionPerformed
 
     private void jMenuItemEditorManualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItemEditorManualActionPerformed
@@ -265,7 +270,7 @@ public class Index extends javax.swing.JFrame {
             // UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
             // UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
             // UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            
+
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
@@ -295,6 +300,7 @@ public class Index extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItemEditorManual;
+    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
     public javax.swing.JTextArea jTextAreaLogCompile;
